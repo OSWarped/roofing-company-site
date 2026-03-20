@@ -4,21 +4,38 @@ import { siteContent } from "../../data/site-content";
 
 export default function ServicesPreview() {
   return (
-    <section className="py-16">
+    <section className="min-h-screen bg-white flex items-center py-16 sm:py-20">
       <Container>
-        <SectionHeading
-          eyebrow="Services"
-          title="Roofing services homeowners can trust"
-          description="From repairs to full replacements, help customers quickly understand what the company offers."
-        />
+        <div className="grid gap-12">
+          <SectionHeading
+            eyebrow="Services"
+            title="Roofing services designed to keep things simple"
+            description="Present the core work clearly and let the customer quickly understand how you can help."
+          />
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {siteContent.services.map((service) => (
-            <div key={service.title} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-zinc-900">{service.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-zinc-600">{service.description}</p>
-            </div>
-          ))}
+          <div className="grid gap-6 md:grid-cols-3">
+            {siteContent.services.map((service) => (
+              <article
+                key={service.title}
+                className="flex min-h-[260px] flex-col justify-between rounded-3xl bg-zinc-50 p-8"
+              >
+                <div>
+                  <h3 className="text-2xl font-semibold tracking-tight text-zinc-900">
+                    {service.title}
+                  </h3>
+                  <p className="mt-4 text-base leading-7 text-zinc-600">
+                    {service.description}
+                  </p>
+                </div>
+
+                <div className="mt-8">
+                  <span className="text-sm font-medium uppercase tracking-[0.14em] text-zinc-500">
+                    Learn more
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </Container>
     </section>
