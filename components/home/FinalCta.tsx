@@ -4,24 +4,32 @@ import { siteContent } from "../../data/site-content";
 
 export default function FinalCta() {
   return (
-    <section className="py-16">
+    <section className="min-h-screen bg-zinc-900 text-white flex items-center">
       <Container>
-        <div className="rounded-3xl bg-zinc-900 px-6 py-10 text-white sm:px-10">
-          <h2 className="text-3xl font-bold tracking-tight">Need roofing help?</h2>
-          <p className="mt-3 max-w-2xl text-zinc-300">
+        <div className="mx-auto max-w-3xl py-20 text-center">
+          <p className="mb-4 text-sm font-medium uppercase tracking-[0.18em] text-zinc-400">
+            Get Started
+          </p>
+
+          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+            Need roofing help?
+          </h2>
+
+          <p className="mt-6 text-lg leading-8 text-zinc-300 sm:text-xl">
             Contact us today for a free estimate or to talk through your roofing needs.
           </p>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               href="/contact"
-              className="rounded-md bg-white px-5 py-3 text-center font-semibold text-zinc-900 hover:bg-zinc-200"
+              className="rounded-md bg-white px-6 py-3 text-center text-sm font-semibold text-zinc-900 transition hover:bg-zinc-200"
             >
               Request Estimate
             </Link>
+
             <a
               href={`tel:${siteContent.phone}`}
-              className="rounded-md border border-zinc-600 px-5 py-3 text-center font-semibold text-white hover:bg-zinc-800"
+              className="rounded-md border border-zinc-600 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-zinc-800"
             >
               Call Now
             </a>

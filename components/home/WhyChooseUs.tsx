@@ -10,21 +10,31 @@ export default function WhyChooseUs() {
   ];
 
   return (
-    <section className="bg-zinc-50 py-16">
+    <section className="min-h-screen bg-zinc-50 flex items-center py-16 sm:py-20">
       <Container>
-        <div className="grid gap-10 md:grid-cols-2 md:items-center">
-          <div className="rounded-2xl bg-white p-8 text-zinc-500">Crew / project image area</div>
+        <div className="grid items-center gap-12 md:grid-cols-[0.95fr_1.05fr]">
+          <div className="relative h-[50vh] min-h-[320px] overflow-hidden rounded-3xl bg-zinc-200 md:h-[68vh]">
+            <div className="absolute inset-0 bg-gradient-to-br from-zinc-300 via-zinc-200 to-zinc-400" />
+            <div className="absolute inset-0 flex items-end p-6">
+              <p className="text-sm font-medium text-zinc-600">
+                Crew / project image
+              </p>
+            </div>
+          </div>
 
-          <div>
+          <div className="max-w-xl">
             <SectionHeading
               eyebrow="Why Choose Us"
-              title="A dependable roofing partner for your home or business"
-              description="This section should build trust fast without becoming a wall of text."
+              title="A dependable roofing partner from first call to final cleanup"
+              description="Keep this section focused on trust, communication, and the quality of the work."
             />
 
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="mt-8 space-y-4">
               {items.map((item) => (
-                <div key={item} className="rounded-lg border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700">
+                <div
+                  key={item}
+                  className="border-b border-zinc-300 pb-4 text-base font-medium text-zinc-700"
+                >
                   {item}
                 </div>
               ))}

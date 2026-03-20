@@ -1,41 +1,55 @@
+import Image from "next/image";
 import Link from "next/link";
 import Container from "../shared/Container";
 import { siteContent } from "../../data/site-content";
 
 export default function Hero() {
   return (
-    <section className="bg-white py-16 sm:py-20">
+    <section className="min-h-screen bg-white flex items-center">
       <Container>
-        <div className="grid items-center gap-10 md:grid-cols-2">
-          <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+        <div className="grid min-h-[calc(100vh-8rem)] items-center gap-12 py-16 md:grid-cols-[1.05fr_0.95fr] md:py-20">
+          <div className="max-w-2xl">
+            <p className="mb-4 text-sm font-medium uppercase tracking-[0.18em] text-zinc-500">
               Trusted Local Roofing
             </p>
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl">
+
+            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl md:text-6xl">
               {siteContent.hero.headline}
             </h1>
-            <p className="mt-5 max-w-xl text-lg text-zinc-600">
+
+            <p className="mt-6 max-w-xl text-lg leading-8 text-zinc-600 sm:text-xl">
               {siteContent.hero.subheadline}
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/contact"
-                className="rounded-md bg-zinc-900 px-5 py-3 text-center font-semibold text-white hover:bg-zinc-700"
+                className="rounded-md bg-zinc-900 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-zinc-700"
               >
                 {siteContent.hero.primaryCta}
               </Link>
+
               <a
                 href={`tel:${siteContent.phone}`}
-                className="rounded-md border border-zinc-300 px-5 py-3 text-center font-semibold text-zinc-900 hover:bg-zinc-100"
+                className="rounded-md border border-zinc-300 px-6 py-3 text-center text-sm font-semibold text-zinc-900 transition hover:bg-zinc-100"
               >
                 {siteContent.hero.secondaryCta}
               </a>
             </div>
           </div>
 
-          <div className="rounded-2xl bg-zinc-100 p-8 text-zinc-500">
-            Hero image area
+          <div className="relative h-[50vh] min-h-[340px] overflow-hidden rounded-3xl bg-zinc-100 md:h-[72vh]">
+            <Image
+              src="/images/hero/roofing-hero.jpg"
+              alt="Roofing crew working on a residential roof"
+              fill
+              priority
+              className="object-cover"
+            />
+
+            <div className="absolute inset-0 bg-black/10" />
+
+            
           </div>
         </div>
       </Container>
