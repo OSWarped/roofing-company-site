@@ -1,39 +1,51 @@
 import Container from "../shared/Container";
-import SectionHeading from "../shared/SectionHeading";
+import { siteContent } from "../../data/site-content";
 
 export default function WhyChooseUs() {
-  const items = [
-    "Experienced local team",
-    "Clear communication",
-    "Quality workmanship",
-    "Responsive service",
-  ];
-
   return (
-    <section className="min-h-screen bg-zinc-50 flex items-center py-16 sm:py-20">
+    <section className="flex min-h-screen items-center bg-brand-dark py-16 text-text-light sm:py-20">
       <Container>
         <div className="grid items-center gap-12 md:grid-cols-[0.95fr_1.05fr]">
-          <div className="relative h-[50vh] min-h-[320px] overflow-hidden rounded-3xl bg-zinc-200 md:h-[68vh]">
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-300 via-zinc-200 to-zinc-400" />
-            <div className="absolute inset-0 flex items-end p-6">
-              <p className="text-sm font-medium text-zinc-600">
-                Crew / project image
+          <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-sm sm:p-10">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {siteContent.cities.map((city) => (
+                <div
+                  key={city}
+                  className="rounded-3xl border border-white/10 bg-white/6 px-5 py-4 text-sm font-semibold uppercase tracking-[0.14em] text-white/85"
+                >
+                  {city}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 rounded-3xl border border-white/10 bg-[rgba(94,118,138,0.18)] p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
+                Service Area
+              </p>
+              <p className="mt-3 text-lg font-semibold text-white">
+                {siteContent.serviceAreaDescription}
               </p>
             </div>
           </div>
 
           <div className="max-w-xl">
-            <SectionHeading
-              eyebrow="Why Choose Us"
-              title="A dependable roofing partner from first call to final cleanup"
-              description="Keep this section focused on trust, communication, and the quality of the work."
-            />
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-accent-red">
+              {siteContent.whyChooseUs.eyebrow}
+            </p>
+
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              {siteContent.whyChooseUs.title}
+            </h2>
+
+            <p className="mt-5 text-base leading-8 text-white/72 sm:text-lg">
+              {siteContent.whyChooseUs.description}
+            </p>
 
             <div className="mt-8 space-y-4">
-              {items.map((item) => (
+              {siteContent.whyChooseUs.items.map((item) => (
                 <div
                   key={item}
-                  className="border-b border-zinc-300 pb-4 text-base font-medium text-zinc-700"
+                  className="rounded-3xl border border-white/10 bg-white/6 px-5 py-4 text-base font-medium leading-7 text-white/86"
                 >
                   {item}
                 </div>
