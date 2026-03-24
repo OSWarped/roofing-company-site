@@ -1,9 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import TopBar from "../components/layout/TopBar";
-import Header from "../components/layout/Header";
-import Footer from "../components/layout/Footer";
-import { siteContent } from "../data/site-content";
+import { siteContent } from "@/data/site-content";
+import SiteChrome from "@/components/layout/SiteChrome";
 
 export const metadata: Metadata = {
   title: `${siteContent.companyName} | Roofing Services`,
@@ -18,10 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-brand-light text-text-primary antialiased">
-        <TopBar />
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );
