@@ -4,6 +4,29 @@ import { siteContent } from "@/data/site-content";
 import { prisma } from "@/lib/db/prisma";
 import { gallerySections, type GallerySectionKey } from "@/lib/admin/sections";
 
+async function fetchGalleryItemsWithMedia(sectionKey: GallerySectionKey) {
+  if (!prisma) {
+    return [];
+  }
+
+  return prisma.galleryItem.findMany({
+    where: {
+      sectionKey,
+      isVisible: true,
+      mediaAsset: {
+        isArchived: false,
+      },
+    },
+    include: {
+      mediaAsset: true,
+    },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+  });
+}
+
+type GalleryItemWithMedia = Awaited<
+  ReturnType<typeof fetchGalleryItemsWithMedia>
+>[number];
 export type ManagedMediaAsset = {
   id: string;
   blobUrl: string;
@@ -30,14 +53,14 @@ export type ManagedGalleryItem = {
 
 export type GallerySectionItem = {
   id: string;
-  mediaAssetId?: string;
+  mediaAssetId: string;
   imageUrl: string;
   altText: string;
   title: string;
   subtitle: string;
   sortOrder: number;
   isVisible: boolean;
-  sectionKey: string;
+  sectionKey: GallerySectionKey;
   source: "database" | "fallback";
 };
 
@@ -102,37 +125,13 @@ export async function getGallerySectionItems(
     return fallbackWhenEmpty ? fallbackItems : [];
   }
 
-  const items = await prisma.galleryItem.findMany({
-    where: {
-      sectionKey,
-      isVisible: true,
-      mediaAsset: {
-        isArchived: false,
-      },
-    },
-    include: {
-      mediaAsset: true,
-    },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-  });
+  const items = await fetchGalleryItemsWithMedia(sectionKey);
 
   if (!items.length) {
     return fallbackWhenEmpty ? fallbackItems : [];
   }
 
-  return items.map((item: {
-    id: string;
-    mediaAssetId: string;
-    title: string | null;
-    subtitle: string | null;
-    sortOrder: number;
-    isVisible: boolean;
-    mediaAsset: {
-      blobUrl: string;
-      altText: string | null;
-      caption: string;
-    };
-  }): GallerySectionItem => ({
+  return items.map((item: GalleryItemWithMedia): GallerySectionItem => ({
     id: item.id,
     mediaAssetId: item.mediaAssetId,
     imageUrl: item.mediaAsset.blobUrl,
