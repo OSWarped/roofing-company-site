@@ -28,6 +28,19 @@ export type ManagedGalleryItem = {
   source: "database" | "fallback";
 };
 
+export type GallerySectionItem = {
+  id: string;
+  mediaAssetId?: string;
+  imageUrl: string;
+  altText: string;
+  title: string;
+  subtitle: string;
+  sortOrder: number;
+  isVisible: boolean;
+  sectionKey: string;
+  source: "database" | "fallback";
+};
+
 const fallbackHomeItems: ManagedGalleryItem[] = siteContent.gallery.cards.map((item, index) => ({
   id: `home-fallback-${index + 1}`,
   mediaAssetId: `home-fallback-media-${index + 1}`,
@@ -79,15 +92,14 @@ function mapSectionKey(sectionKey: string): GallerySectionKey | null {
 export async function getGallerySectionItems(
   sectionKey: GallerySectionKey,
   options?: { fallbackWhenEmpty?: boolean }
-) {
+): Promise<GallerySectionItem[]> {
   const fallbackWhenEmpty = options?.fallbackWhenEmpty ?? true;
 
-  if (!prisma) {
-    if (!fallbackWhenEmpty) {
-      return [];
-    }
+  const fallbackItems: GallerySectionItem[] =
+    sectionKey === "home-featured" ? fallbackHomeItems : fallbackGalleryItems;
 
-    return sectionKey === "home-featured" ? fallbackHomeItems : fallbackGalleryItems;
+  if (!prisma) {
+    return fallbackWhenEmpty ? fallbackItems : [];
   }
 
   const items = await prisma.galleryItem.findMany({
@@ -105,24 +117,32 @@ export async function getGallerySectionItems(
   });
 
   if (!items.length) {
-    if (!fallbackWhenEmpty) {
-      return [];
-    }
-
-    return sectionKey === "home-featured" ? fallbackHomeItems : fallbackGalleryItems;
+    return fallbackWhenEmpty ? fallbackItems : [];
   }
 
-  return items.map((item: { id: unknown; mediaAssetId: unknown; mediaAsset: { blobUrl: unknown; altText: unknown; caption: unknown; }; title: unknown; subtitle: unknown; sortOrder: unknown; isVisible: unknown; }) => ({
+  return items.map((item: {
+    id: string;
+    mediaAssetId: string;
+    title: string | null;
+    subtitle: string | null;
+    sortOrder: number;
+    isVisible: boolean;
+    mediaAsset: {
+      blobUrl: string;
+      altText: string | null;
+      caption: string;
+    };
+  }): GallerySectionItem => ({
     id: item.id,
     mediaAssetId: item.mediaAssetId,
     imageUrl: item.mediaAsset.blobUrl,
-    altText: item.mediaAsset.altText || item.title || siteContent.companyName,
-    title: item.title || item.mediaAsset.caption || "Project image",
-    subtitle: item.subtitle || item.mediaAsset.caption || "",
+    altText: item.mediaAsset.altText ?? item.title ?? siteContent.companyName,
+    title: item.title ?? item.mediaAsset.caption ?? "Project image",
+    subtitle: item.subtitle ?? item.mediaAsset.caption ?? "",
     sortOrder: item.sortOrder,
     isVisible: item.isVisible,
     sectionKey,
-    source: "database" as const,
+    source: "database",
   }));
 }
 
@@ -212,7 +232,7 @@ export async function listAvailableMediaForSection(sectionKey: GallerySectionKey
   const assigned = await getGallerySectionItems(normalizedSectionKey, {
     fallbackWhenEmpty: false,
   });
-  const assignedIds = new Set(assigned.map((item: ManagedGalleryItem) => item.mediaAssetId));
+  const assignedIds = new Set(assigned.map((item) => item.mediaAssetId));
 
   return media.filter((asset: ManagedMediaAsset) => !assignedIds.has(asset.id) && !asset.isArchived);
 }
