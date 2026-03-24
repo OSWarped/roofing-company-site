@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import type { Metadata } from "next";
 import Container from "@/components/shared/Container";
@@ -30,7 +29,7 @@ export default async function GalleryPage() {
       <section className="bg-white py-16 sm:py-20">
         <Container>
           <div className="grid gap-6 md:grid-cols-2">
-            {projects.map((project: any, index: number) => (
+            {projects.map((project, index) => (
               <article
                 key={`${project.id}-${index}`}
                 className="overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-50 shadow-sm"

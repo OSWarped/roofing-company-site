@@ -2,7 +2,7 @@ import { AdminNotice } from "@/components/admin/AdminNotice";
 import { GalleryPreviewCard } from "@/components/admin/GalleryPreviewCard";
 import { gallerySections } from "@/lib/admin/sections";
 import { getAdminSetupState } from "@/lib/auth/admin";
-import { listAvailableMediaForSection, listGalleryAssignments, ManagedGalleryItem, ManagedMediaAsset } from "@/lib/admin/repository";
+import { listAvailableMediaForSection, listGalleryAssignments, GallerySectionItem, ManagedMediaAsset } from "@/lib/admin/repository";
 import {
   assignMediaToGalleryAction,
   removeGalleryItemAction,
@@ -11,6 +11,10 @@ import {
 
 type GalleryPageProps = {
   searchParams: Promise<{ status?: string }>;
+};
+
+type GalleryPreviewCardProps = {
+  item: GallerySectionItem;
 };
 
 export default async function AdminGalleryPage({ searchParams }: GalleryPageProps) {
@@ -96,7 +100,7 @@ export default async function AdminGalleryPage({ searchParams }: GalleryPageProp
             </div>
 
             <div className="mt-6 grid gap-6 xl:grid-cols-2">
-              {section.items.map((item: ManagedGalleryItem) => (
+              {section.items.map((item) => (
                 <div key={item.id} className="rounded-3xl border border-white/10 bg-zinc-950/40 p-5">
                   <GalleryPreviewCard item={item} />
                   <form action={updateGalleryItemAction} className="mt-5 grid gap-4">
