@@ -27,6 +27,21 @@ async function fetchGalleryItemsWithMedia(sectionKey: GallerySectionKey) {
 type GalleryItemWithMedia = Awaited<
   ReturnType<typeof fetchGalleryItemsWithMedia>
 >[number];
+
+
+async function fetchMediaAssets(includeArchived: boolean) {
+  if (!prisma) {
+    return [];
+  }
+
+  return prisma.mediaAsset.findMany({
+    where: includeArchived ? undefined : { isArchived: false },
+    orderBy: [{ isArchived: "asc" }, { createdAt: "desc" }],
+  });
+}
+
+type MediaAssetRow = Awaited<ReturnType<typeof fetchMediaAssets>>[number];
+
 export type ManagedMediaAsset = {
   id: string;
   blobUrl: string;
@@ -160,24 +175,16 @@ export async function listMediaAssets(options?: { includeArchived?: boolean }) {
     return fallbackMediaAssets;
   }
 
-  return assets.map((asset: {
-    id: string;
-    blobUrl: string;
-    pathname: string;
-    altText: string;
-    caption: string;
-    createdAt: Date;
-    isArchived: boolean;
-  }): ManagedMediaAsset => ({
-    id: asset.id,
-    blobUrl: asset.blobUrl,
-    pathname: asset.pathname,
-    altText: asset.altText || siteContent.companyName,
-    caption: asset.caption || "",
-    createdAt: asset.createdAt.toISOString(),
-    isArchived: asset.isArchived,
-    source: "database" as const,
-  }));
+  return assets.map((asset: MediaAssetRow): ManagedMediaAsset => ({
+  id: asset.id,
+  blobUrl: asset.blobUrl,
+  pathname: asset.pathname,
+  altText: asset.altText ?? siteContent.companyName,
+  caption: asset.caption ?? "",
+  createdAt: asset.createdAt.toISOString(),
+  isArchived: asset.isArchived,
+  source: "database",
+}));
 }
 
 export async function listGalleryAssignments(options?: { fallbackWhenEmpty?: boolean }) {
