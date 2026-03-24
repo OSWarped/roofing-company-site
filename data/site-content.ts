@@ -140,9 +140,9 @@ const services: ServiceItem[] = [
 export const siteContent: SiteContent = {
   companyName: "Integrity Roofing of Mississippi",
   shortName: "Integrity Roofing of Mississippi",
-  phone: "(228) 256-8204",
-  phoneHref: "2282568204",
-  email: "info@integrityroofing.com",
+  phone: "(228) 697-1315",
+  phoneHref: "2286971315",
+  email: "integrityroofs29@gmail.com",
   licenseNumber: "MSBOC No. R22836",
   serviceArea: "Serving the Mississippi Gulf Coast",
   serviceAreaDescription:

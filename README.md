@@ -34,3 +34,30 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+## Admin module starter
+
+This project now includes a production-oriented admin foundation for Vercel:
+
+- Auth.js credentials login for `/admin/login`
+- Prisma schema for admin users, media assets, and gallery assignments
+- Vercel Blob upload action for media files
+- Protected admin pages for overview, media, gallery, and delegated admins
+- Public gallery components that read database-backed gallery assignments when available and fall back to the current placeholder content when the database is not configured
+
+### Initial setup
+
+1. Create a Postgres database in Vercel and copy the connection string into `DATABASE_URL`.
+2. Create a Blob store in Vercel and set `BLOB_READ_WRITE_TOKEN`.
+3. Set `AUTH_SECRET`.
+4. Run `npm install`.
+5. Run `npm run db:generate`.
+6. Run `npm run db:push` or your preferred migration flow.
+7. Seed the owner account:
+
+```bash
+OWNER_EMAIL="owner@example.com" OWNER_PASSWORD="change-me" OWNER_NAME="Site Owner" npm run db:seed-owner
+```
+
+8. Start the app and visit `/admin/login`.

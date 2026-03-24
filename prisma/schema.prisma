@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminRole {
+  OWNER
+  ADMIN
+}
+
+model User {
+  id           String      @id @default(cuid())
+  email        String      @unique
+  name         String?
+  passwordHash String
+  role         AdminRole   @default(ADMIN)
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  mediaAssets  MediaAsset[]
+}
+
+model MediaAsset {
+  id               String        @id @default(cuid())
+  pathname         String
+  blobUrl          String        @unique
+  contentType      String?
+  altText          String?
+  caption          String?
+  width            Int?
+  height           Int?
+  uploadedByUserId String?
+  isArchived       Boolean       @default(false)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  uploadedBy       User?         @relation(fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+  galleryItems     GalleryItem[]
+
+  @@index([createdAt])
+  @@index([isArchived, createdAt])
+}
+
+model GalleryItem {
+  id           String     @id @default(cuid())
+  sectionKey   String
+  mediaAssetId String
+  title        String?
+  subtitle     String?
+  sortOrder    Int        @default(0)
+  isVisible    Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  mediaAsset   MediaAsset @relation(fields: [mediaAssetId], references: [id], onDelete: Cascade)
+
+  @@unique([sectionKey, mediaAssetId])
+  @@index([sectionKey, sortOrder])
+}
