@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import type { Metadata } from "next";
 import Container from "@/components/shared/Container";
