@@ -1,7 +1,7 @@
 import { AdminNotice } from "@/components/admin/AdminNotice";
 import { requireOwner } from "@/lib/auth/admin";
 import { listAdminUsers } from "@/lib/admin/repository";
-import { createAdminUserAction, updateAdminUserAction } from "../actions";
+import { createAdminUserAction, resetAdminPasswordAction, updateAdminUserAction, } from "../actions";
 
 type AdminUsersPageProps = {
   searchParams: Promise<{ status?: string }>;
@@ -63,25 +63,91 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
 
         <div className="mt-6 grid gap-4">
           {users.map((user) => (
-            <form key={user.id} action={updateAdminUserAction} className="grid gap-4 rounded-2xl border border-white/10 bg-zinc-950/40 p-5 lg:grid-cols-[1.2fr_180px_160px_auto] lg:items-center">
-              <input type="hidden" name="userId" value={user.id} />
-              <div>
-                <p className="text-sm font-semibold text-white">{user.name || user.email}</p>
-                <p className="mt-1 text-sm text-white/65">{user.email}</p>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-white/50">Role</label>
-                <select name="role" defaultValue={user.role} className="mt-2 w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-red-300">
-                  <option value="ADMIN">Admin</option>
-                  <option value="OWNER">Owner</option>
-                </select>
-              </div>
-              <label className="inline-flex items-center gap-3 text-sm text-white/75 lg:mt-6">
-                <input name="isActive" type="checkbox" defaultChecked={user.isActive} className="h-4 w-4 rounded border-white/20 bg-zinc-950 text-red-400" />
-                Active
-              </label>
-              <button type="submit" className="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-200">Update</button>
-            </form>
+            <div
+              key={user.id}
+              className="rounded-2xl border border-white/10 bg-zinc-950/40 p-5"
+            >
+              <form
+                action={updateAdminUserAction}
+                className="grid gap-4 lg:grid-cols-[1.2fr_180px_160px_auto] lg:items-center"
+              >
+                <input type="hidden" name="userId" value={user.id} />
+                <div>
+                  <p className="text-sm font-semibold text-white">
+                    {user.name || user.email}
+                  </p>
+                  <p className="mt-1 text-sm text-white/65">{user.email}</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-white/50">
+                    Role
+                  </label>
+                  <select
+                    name="role"
+                    defaultValue={user.role}
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-red-300"
+                  >
+                    <option value="ADMIN">Admin</option>
+                    <option value="OWNER">Owner</option>
+                  </select>
+                </div>
+                <label className="inline-flex items-center gap-3 text-sm text-white/75 lg:mt-6">
+                  <input
+                    name="isActive"
+                    type="checkbox"
+                    defaultChecked={user.isActive}
+                    className="h-4 w-4 rounded border-white/20 bg-zinc-950 text-red-400"
+                  />
+                  Active
+                </label>
+                <button
+                  type="submit"
+                  className="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-200"
+                >
+                  Update
+                </button>
+              </form>
+
+              <form
+                action={resetAdminPasswordAction}
+                className="mt-5 grid gap-4 border-t border-white/10 pt-5 lg:grid-cols-[1fr_1fr_auto] lg:items-end"
+              >
+                <input type="hidden" name="userId" value={user.id} />
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-white/50">
+                    New password
+                  </label>
+                  <input
+                    name="newPassword"
+                    type="password"
+                    minLength={8}
+                    required
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-red-300"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-white/50">
+                    Confirm password
+                  </label>
+                  <input
+                    name="confirmPassword"
+                    type="password"
+                    minLength={8}
+                    required
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-red-300"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="rounded-2xl bg-red-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-400"
+                >
+                  Reset password
+                </button>
+              </form>
+            </div>
           ))}
           {!users.length ? (
             <p className="rounded-2xl border border-dashed border-white/15 bg-zinc-950/30 px-5 py-4 text-sm text-white/65">

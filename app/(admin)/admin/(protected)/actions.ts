@@ -283,3 +283,53 @@ export async function updateAdminUserAction(formData: FormData) {
   revalidatePath("/admin/admins");
   redirect("/admin/admins?status=updated");
 }
+
+export async function resetAdminPasswordAction(formData: FormData) {
+  await requireOwner();
+
+  if (!prisma) {
+    redirect("/admin/admins?status=database-not-configured");
+  }
+
+  const userId = String(formData.get("userId") ?? "").trim();
+  const newPassword = String(formData.get("newPassword") ?? "").trim();
+  const confirmPassword = String(formData.get("confirmPassword") ?? "").trim();
+
+  if (!userId || !newPassword || !confirmPassword) {
+    redirect("/admin/admins?status=missing-password-fields");
+  }
+
+  if (newPassword !== confirmPassword) {
+    redirect("/admin/admins?status=passwords-do-not-match");
+  }
+
+  if (newPassword.length < 8) {
+    redirect("/admin/admins?status=password-too-short");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, role: true },
+  });
+
+  if (!user) {
+    redirect("/admin/admins?status=user-not-found");
+  }
+
+  if (user.role !== "ADMIN" && user.role !== "OWNER") {
+    redirect("/admin/admins?status=user-not-admin");
+  }
+
+  const passwordHash = await hash(newPassword, 12);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      passwordHash,
+      isActive: true,
+    },
+  });
+
+  revalidatePath("/admin/admins");
+  redirect("/admin/admins?status=password-reset");
+}
