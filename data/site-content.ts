@@ -1,32 +1,44 @@
-type ServiceItem = {
+export type ServiceItem = {
   title: string;
   description: string;
   href: string;
 };
 
-type ValueItem = {
+export type ValueItem = {
   title: string;
   description: string;
 };
 
-type GalleryCard = {
+export type GalleryCard = {
   label: string;
   title: string;
   description: string;
 };
 
-type ReviewItem = {
+export type ReviewItem = {
   name: string;
   text: string;
 };
 
-type ProjectItem = {
+export type ProjectItem = {
   location: string;
   title: string;
   description: string;
 };
 
-type SiteContent = {
+export type SectionVisibility = {
+  homeHero: boolean;
+  homeTrustBar: boolean;
+  homeServices: boolean;
+  homeWhyChooseUs: boolean;
+  homeGallery: boolean;
+  homeFinalCta: boolean;
+  galleryPageIntro: boolean;
+  galleryPageProjects: boolean;
+  galleryPageCta: boolean;
+};
+
+export type SiteContent = {
   companyName: string;
   shortName: string;
   phone: string;
@@ -80,6 +92,7 @@ type SiteContent = {
     title: string;
     description: string;
   };
+  sectionVisibility: SectionVisibility;
   socialLinks: {
     facebook: string;
     instagram: string;
@@ -303,6 +316,18 @@ export const siteContent: SiteContent = {
     title: "Need roofing help on the Mississippi Gulf Coast?",
     description:
       "Talk with Integrity Roofing of Mississippi about roof repair, roof replacement, storm damage, or your next estimate. Licensed and insured with registration MSBOC No. R22836.",
+  },
+
+  sectionVisibility: {
+    homeHero: true,
+    homeTrustBar: true,
+    homeServices: true,
+    homeWhyChooseUs: true,
+    homeGallery: true,
+    homeFinalCta: true,
+    galleryPageIntro: true,
+    galleryPageProjects: true,
+    galleryPageCta: true,
   },
 
   socialLinks: {

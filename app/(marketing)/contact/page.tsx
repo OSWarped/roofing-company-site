@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Container from "@/components/shared/Container";
 import SectionHeading from "@/components/shared/SectionHeading";
 import { siteContent } from "@/data/site-content";
+import { getEditableSiteContent } from "@/lib/site/content";
 
 export const metadata: Metadata = {
   title: `Contact | ${siteContent.companyName}`,
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
     "Contact Integrity Roofing of Mississippi for roof repair, replacement, and roofing estimates on the Mississippi Gulf Coast.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const content = await getEditableSiteContent();
+
   return (
     <>
       <section className="border-b border-zinc-200 bg-zinc-50 py-16 sm:py-20">
@@ -17,7 +20,7 @@ export default function ContactPage() {
           <SectionHeading
             eyebrow="Contact"
             title="Talk with Integrity Roofing of Mississippi"
-            description={`${siteContent.contact.responseNote} ${siteContent.licenseNumber}.`}
+            description={`${content.contact.responseNote} ${content.licenseNumber}.`}
           />
         </Container>
       </section>
@@ -30,23 +33,23 @@ export default function ContactPage() {
               <div className="mt-6 space-y-5 text-sm text-zinc-600">
                 <div>
                   <p className="font-semibold text-zinc-900">Phone</p>
-                  <a href={`tel:${siteContent.phone}`} className="hover:text-zinc-900">
-                    {siteContent.phone}
+                  <a href={`tel:${content.phoneHref}`} className="hover:text-zinc-900">
+                    {content.phone}
                   </a>
                 </div>
                 <div>
                   <p className="font-semibold text-zinc-900">Email</p>
-                  <a href={`mailto:${siteContent.email}`} className="break-all hover:text-zinc-900">
-                    {siteContent.email}
+                  <a href={`mailto:${content.email}`} className="break-all hover:text-zinc-900">
+                    {content.email}
                   </a>
                 </div>
                 <div>
                   <p className="font-semibold text-zinc-900">Coverage</p>
-                  <p>{siteContent.serviceAreaDetail}</p>
+                  <p>{content.serviceAreaDetail}</p>
                 </div>
                 <div>
                   <p className="font-semibold text-zinc-900">Credentials</p>
-                  <p>Licensed &amp; Insured • {siteContent.licenseNumber}</p>
+                  <p>Licensed &amp; Insured • {content.licenseNumber}</p>
                 </div>
               </div>
             </div>
@@ -60,7 +63,7 @@ export default function ContactPage() {
               </p>
 
               <ul className="mt-8 space-y-4">
-                {siteContent.contact.estimateChecklist.map((item) => (
+                {content.contact.estimateChecklist.map((item) => (
                   <li
                     key={item}
                     className="rounded-2xl border border-zinc-200 bg-zinc-50 px-5 py-4 text-sm text-zinc-700"
@@ -74,7 +77,7 @@ export default function ContactPage() {
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-300">
                   Fastest Option
                 </p>
-                <p className="mt-3 text-lg font-semibold">Call {siteContent.phone}</p>
+                <p className="mt-3 text-lg font-semibold">Call {content.phone}</p>
                 <p className="mt-3 text-sm leading-7 text-zinc-300">
                   For active leaks, visible storm damage, or time-sensitive issues,
                   phone is the best first step.
@@ -96,7 +99,7 @@ export default function ContactPage() {
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              {siteContent.serviceCities.map((city) => (
+              {content.serviceCities.map((city) => (
                 <div
                   key={city}
                   className="rounded-2xl border border-zinc-200 bg-white px-5 py-4 text-sm font-medium text-zinc-700"

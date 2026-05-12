@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Container from "@/components/shared/Container";
 import SectionHeading from "@/components/shared/SectionHeading";
 import { siteContent } from "@/data/site-content";
+import { getEditableSiteContent } from "@/lib/site/content";
 
 export const metadata: Metadata = {
   title: `About | ${siteContent.companyName}`,
@@ -10,7 +11,9 @@ export const metadata: Metadata = {
     "Learn more about Integrity Roofing of Mississippi, a licensed and insured roofing company serving the Mississippi Gulf Coast.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const content = await getEditableSiteContent();
+
   return (
     <>
       <section className="border-b border-zinc-200 bg-zinc-50 py-16 sm:py-20">
@@ -18,7 +21,7 @@ export default function AboutPage() {
           <SectionHeading
             eyebrow="About"
             title="A Mississippi roofing name with a Gulf Coast focus"
-            description={`${siteContent.about.intro} ${siteContent.licenseNumber}.`}
+            description={`${content.about.intro} ${content.licenseNumber}.`}
           />
         </Container>
       </section>
@@ -27,7 +30,7 @@ export default function AboutPage() {
         <Container>
           <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
             <div className="space-y-6 text-base leading-8 text-zinc-600 sm:text-lg">
-              <p>{siteContent.about.story}</p>
+              <p>{content.about.story}</p>
               
             </div>
 
@@ -38,20 +41,20 @@ export default function AboutPage() {
               <dl className="mt-6 space-y-5 text-sm text-zinc-600">
                 <div>
                   <dt className="font-semibold text-zinc-900">Company</dt>
-                  <dd>{siteContent.companyName}</dd>
+                  <dd>{content.companyName}</dd>
                 </div>
                 <div>
                   <dt className="font-semibold text-zinc-900">Coverage</dt>
-                  <dd>{siteContent.serviceArea}</dd>
+                  <dd>{content.serviceArea}</dd>
                 </div>
                 <div>
                   <dt className="font-semibold text-zinc-900">Credentials</dt>
-                  <dd>Licensed &amp; Insured • {siteContent.licenseNumber}</dd>
+                  <dd>Licensed &amp; Insured • {content.licenseNumber}</dd>
                 </div>
                 <div>
                   <dt className="font-semibold text-zinc-900">Contact</dt>
-                  <dd>{siteContent.phone}</dd>
-                  <dd>{siteContent.email}</dd>
+                  <dd>{content.phone}</dd>
+                  <dd>{content.email}</dd>
                 </div>
               </dl>
             </div>
@@ -68,7 +71,7 @@ export default function AboutPage() {
           />
 
           <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {siteContent.about.values.map((value) => (
+            {content.about.values.map((value) => (
               <div
                 key={value.title}
                 className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm"
@@ -88,12 +91,12 @@ export default function AboutPage() {
               <SectionHeading
                 eyebrow="Service Area"
                 title="Built to serve the Mississippi Gulf Coast"
-                description={siteContent.serviceAreaDetail}
+                description={content.serviceAreaDetail}
               />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              {siteContent.serviceCities.map((city) => (
+              {content.serviceCities.map((city) => (
                 <div
                   key={city}
                   className="rounded-2xl border border-zinc-200 bg-zinc-50 px-5 py-4 text-sm font-medium text-zinc-700"
@@ -117,7 +120,7 @@ export default function AboutPage() {
                 Need roofing help on the Gulf Coast?
               </h2>
               <p className="mt-4 text-base leading-7 text-zinc-300 sm:text-lg">
-                Reach out to {siteContent.companyName} for a straightforward
+                Reach out to {content.companyName} for a straightforward
                 conversation about your roof, your timeline, and the next best step.
               </p>
             </div>
@@ -130,10 +133,10 @@ export default function AboutPage() {
                 Request an Estimate
               </Link>
               <a
-                href={`tel:${siteContent.phone}`}
+                href={`tel:${content.phoneHref}`}
                 className="rounded-md border border-white/20 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
               >
-                Call {siteContent.phone}
+                Call {content.phone}
               </a>
             </div>
           </div>

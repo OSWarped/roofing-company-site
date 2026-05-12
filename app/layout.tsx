@@ -1,7 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { siteContent } from "@/data/site-content";
-import SiteChrome from "@/components/layout/SiteChrome";
 
 export const metadata: Metadata = {
   title: `${siteContent.companyName} | Roofing Services`,
@@ -16,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-brand-light text-text-primary antialiased">
-        <SiteChrome>{children}</SiteChrome>
+        {children}
       </body>
     </html>
   );

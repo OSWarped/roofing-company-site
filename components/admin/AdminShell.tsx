@@ -4,6 +4,7 @@ import { adminSignOutAction } from "@/app/(admin)/admin/(protected)/actions";
 
 const navItems = [
   { href: "/admin", label: "Overview" },
+  { href: "/admin/content", label: "Site Content" },
   { href: "/admin/media", label: "Media Library" },
   { href: "/admin/gallery", label: "Gallery Manager" },
   { href: "/admin/admins", label: "Admins" },

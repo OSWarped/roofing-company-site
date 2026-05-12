@@ -1,25 +1,22 @@
-"use client";
-
 import type { ReactNode } from "react";
-import { usePathname } from "next/navigation";
+import type { SiteContent } from "@/data/site-content";
 import TopBar from "@/components/layout/TopBar";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-export default function SiteChrome({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const isAdminRoute = pathname?.startsWith("/admin") ?? false;
-
-  if (isAdminRoute) {
-    return <>{children}</>;
-  }
-
+export default function SiteChrome({
+  children,
+  content,
+}: {
+  children: ReactNode;
+  content: SiteContent;
+}) {
   return (
     <>
-      <TopBar />
-      <Header />
+      <TopBar content={content} />
+      <Header content={content} />
       <main>{children}</main>
-      <Footer />
+      <Footer content={content} />
     </>
   );
 }

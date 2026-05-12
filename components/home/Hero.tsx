@@ -1,28 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
 import Container from "../shared/Container";
-import { siteContent } from "../../data/site-content";
+import type { SiteContent } from "../../data/site-content";
 
-export default function Hero() {
+export default function Hero({ content }: { content: SiteContent }) {
   return (
     <section className="flex min-h-screen items-center bg-brand-light">
       <Container>
         <div className="grid min-h-[calc(100vh-8rem)] items-center gap-12 py-16 md:grid-cols-[1.05fr_0.95fr] md:py-20">
           <div className="max-w-2xl">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-accent-red">
-              {siteContent.hero.eyebrow}
+              {content.hero.eyebrow}
             </p>
 
             <h1 className="text-4xl font-bold tracking-tight text-brand-dark sm:text-5xl md:text-6xl">
-              {siteContent.hero.headline}
+              {content.hero.headline}
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-text-secondary sm:text-xl">
-              {siteContent.hero.subheadline}
+              {content.hero.subheadline}
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              {siteContent.hero.supportingPoints.map((item) => (
+              {content.hero.supportingPoints.map((item) => (
                 <span
                   key={item}
                   className="rounded-full border border-brand-border bg-brand-surface px-4 py-2 text-sm font-medium text-accent-blue-gray shadow-sm"
@@ -37,14 +37,14 @@ export default function Hero() {
                 href="/contact"
                 className="rounded-full bg-accent-red px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-accent-red-hover"
               >
-                {siteContent.hero.primaryCta}
+                {content.hero.primaryCta}
               </Link>
 
               <a
-                href={`tel:${siteContent.phoneHref}`}
+                href={`tel:${content.phoneHref}`}
                 className="rounded-full border border-brand-border px-6 py-3 text-center text-sm font-semibold text-brand-dark transition hover:bg-brand-muted"
               >
-                {siteContent.hero.secondaryCta}
+                {content.hero.secondaryCta}
               </a>
             </div>
           </div>
@@ -55,7 +55,7 @@ export default function Hero() {
               <div className="relative h-32 w-full sm:h-40">
                 <Image
                   src="/images/integrity-logo-white-red.png"
-                  alt={`${siteContent.companyName} logo`}
+                  alt={`${content.companyName} logo`}
                   fill
                   className="object-contain object-center"
                   sizes="(max-width: 768px) 360px, 500px"
@@ -71,7 +71,7 @@ export default function Hero() {
                     Licensed &amp; Insured
                   </p>
                   <p className="mt-2 text-sm leading-6 text-white/70">
-                    {siteContent.licenseNumber}
+                    {content.licenseNumber}
                   </p>
                 </div>
 
@@ -83,7 +83,7 @@ export default function Hero() {
                     Mississippi Gulf Coast
                   </p>
                   <p className="mt-2 text-sm leading-6 text-white/70">
-                    {siteContent.cities.slice(0, 4).join(" • ")}
+                    {content.cities.slice(0, 4).join(" • ")}
                   </p>
                 </div>
               </div>

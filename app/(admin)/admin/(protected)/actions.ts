@@ -7,9 +7,191 @@ import { put } from "@vercel/blob";
 import { signOut } from "@/auth";
 import { requireAdmin, requireOwner } from "@/lib/auth/admin";
 import { prisma } from "@/lib/db/prisma";
+import { getEditableSiteContent, saveEditableSiteContent } from "@/lib/site/content";
 
 export async function adminSignOutAction() {
   await signOut({ redirectTo: "/admin/login" });
+}
+
+function textValue(formData: FormData, key: string) {
+  return String(formData.get(key) ?? "").trim();
+}
+
+function textList(formData: FormData, key: string) {
+  return textValue(formData, key)
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function pairedItems(formData: FormData, titleKey: string, descriptionKey: string) {
+  const titles = formData.getAll(titleKey).map((value) => String(value).trim());
+  const descriptions = formData.getAll(descriptionKey).map((value) => String(value).trim());
+
+  return titles
+    .map((title, index) => ({
+      title,
+      description: descriptions[index] ?? "",
+    }))
+    .filter((item) => item.title || item.description);
+}
+
+function checkboxValue(formData: FormData, key: string) {
+  return formData.get(key) === "on";
+}
+
+export async function updateSiteContentAction(formData: FormData) {
+  await requireAdmin();
+
+  if (!prisma) {
+    redirect("/admin/content?status=database-not-configured");
+  }
+
+  const current = await getEditableSiteContent();
+  const serviceTitles = formData.getAll("serviceTitle").map((value) => String(value).trim());
+  const serviceDescriptions = formData.getAll("serviceDescription").map((value) => String(value).trim());
+  const serviceHrefs = formData.getAll("serviceHref").map((value) => String(value).trim());
+  const reviewNames = formData.getAll("reviewName").map((value) => String(value).trim());
+  const reviewTexts = formData.getAll("reviewText").map((value) => String(value).trim());
+  const galleryLabels = formData.getAll("galleryCardLabel").map((value) => String(value).trim());
+  const galleryTitles = formData.getAll("galleryCardTitle").map((value) => String(value).trim());
+  const galleryDescriptions = formData.getAll("galleryCardDescription").map((value) =>
+    String(value).trim(),
+  );
+
+  const nextContent = {
+    ...current,
+    companyName: textValue(formData, "companyName") || current.companyName,
+    shortName: textValue(formData, "shortName") || current.shortName,
+    phone: textValue(formData, "phone") || current.phone,
+    phoneHref: textValue(formData, "phoneHref") || current.phoneHref,
+    email: textValue(formData, "email") || current.email,
+    licenseNumber: textValue(formData, "licenseNumber") || current.licenseNumber,
+    serviceArea: textValue(formData, "serviceArea") || current.serviceArea,
+    serviceAreaDescription:
+      textValue(formData, "serviceAreaDescription") || current.serviceAreaDescription,
+    serviceAreaDetail: textValue(formData, "serviceAreaDetail") || current.serviceAreaDetail,
+    cities: textList(formData, "cities"),
+    serviceCities: textList(formData, "serviceCities"),
+    hero: {
+      eyebrow: textValue(formData, "heroEyebrow") || current.hero.eyebrow,
+      headline: textValue(formData, "heroHeadline") || current.hero.headline,
+      subheadline: textValue(formData, "heroSubheadline") || current.hero.subheadline,
+      primaryCta: textValue(formData, "heroPrimaryCta") || current.hero.primaryCta,
+      secondaryCta: textValue(formData, "heroSecondaryCta") || current.hero.secondaryCta,
+      supportingPoints: textList(formData, "heroSupportingPoints"),
+    },
+    trustItems: textList(formData, "trustItems"),
+    services: serviceTitles
+      .map((title, index) => ({
+        title,
+        description: serviceDescriptions[index] ?? "",
+        href: serviceHrefs[index] || "/services",
+      }))
+      .filter((service) => service.title || service.description),
+    whyChooseUs: {
+      eyebrow: textValue(formData, "whyEyebrow") || current.whyChooseUs.eyebrow,
+      title: textValue(formData, "whyTitle") || current.whyChooseUs.title,
+      description: textValue(formData, "whyDescription") || current.whyChooseUs.description,
+      items: textList(formData, "whyItems"),
+    },
+    about: {
+      intro: textValue(formData, "aboutIntro") || current.about.intro,
+      story: textValue(formData, "aboutStory") || current.about.story,
+      values: pairedItems(formData, "aboutValueTitle", "aboutValueDescription"),
+    },
+    contact: {
+      responseNote: textValue(formData, "contactResponseNote") || current.contact.responseNote,
+      estimateChecklist: textList(formData, "estimateChecklist"),
+    },
+    gallery: {
+      eyebrow: textValue(formData, "galleryEyebrow") || current.gallery.eyebrow,
+      title: textValue(formData, "galleryTitle") || current.gallery.title,
+      description: textValue(formData, "galleryDescription") || current.gallery.description,
+      cards: galleryLabels
+        .map((label, index) => ({
+          label,
+          title: galleryTitles[index] ?? "",
+          description: galleryDescriptions[index] ?? "",
+        }))
+        .filter((card) => card.label || card.title || card.description),
+    },
+    reviews: reviewNames
+      .map((name, index) => ({
+        name,
+        text: reviewTexts[index] ?? "",
+      }))
+      .filter((review) => review.name || review.text),
+    reviewsPlaceholder: {
+      title: textValue(formData, "reviewsPlaceholderTitle") || current.reviewsPlaceholder.title,
+      text: textValue(formData, "reviewsPlaceholderText") || current.reviewsPlaceholder.text,
+    },
+    finalCta: {
+      eyebrow: textValue(formData, "finalCtaEyebrow") || current.finalCta.eyebrow,
+      title: textValue(formData, "finalCtaTitle") || current.finalCta.title,
+      description: textValue(formData, "finalCtaDescription") || current.finalCta.description,
+    },
+    sectionVisibility: {
+      homeHero: checkboxValue(formData, "sectionVisibility.homeHero"),
+      homeTrustBar: checkboxValue(formData, "sectionVisibility.homeTrustBar"),
+      homeServices: checkboxValue(formData, "sectionVisibility.homeServices"),
+      homeWhyChooseUs: checkboxValue(formData, "sectionVisibility.homeWhyChooseUs"),
+      homeGallery: checkboxValue(formData, "sectionVisibility.homeGallery"),
+      homeFinalCta: checkboxValue(formData, "sectionVisibility.homeFinalCta"),
+      galleryPageIntro: checkboxValue(formData, "sectionVisibility.galleryPageIntro"),
+      galleryPageProjects: checkboxValue(formData, "sectionVisibility.galleryPageProjects"),
+      galleryPageCta: checkboxValue(formData, "sectionVisibility.galleryPageCta"),
+    },
+    socialLinks: {
+      facebook: textValue(formData, "facebook") || current.socialLinks.facebook,
+      instagram: textValue(formData, "instagram") || current.socialLinks.instagram,
+      tiktok: textValue(formData, "tiktok") || current.socialLinks.tiktok,
+    },
+  };
+
+  if (!nextContent.cities.length) {
+    nextContent.cities = current.cities;
+  }
+
+  if (!nextContent.serviceCities.length) {
+    nextContent.serviceCities = current.serviceCities;
+  }
+
+  if (!nextContent.hero.supportingPoints.length) {
+    nextContent.hero.supportingPoints = current.hero.supportingPoints;
+  }
+
+  if (!nextContent.trustItems.length) {
+    nextContent.trustItems = current.trustItems;
+  }
+
+  if (!nextContent.services.length) {
+    nextContent.services = current.services;
+  }
+
+  if (!nextContent.whyChooseUs.items.length) {
+    nextContent.whyChooseUs.items = current.whyChooseUs.items;
+  }
+
+  if (!nextContent.about.values.length) {
+    nextContent.about.values = current.about.values;
+  }
+
+  if (!nextContent.contact.estimateChecklist.length) {
+    nextContent.contact.estimateChecklist = current.contact.estimateChecklist;
+  }
+
+  if (!nextContent.gallery.cards.length) {
+    nextContent.gallery.cards = current.gallery.cards;
+  }
+
+  await saveEditableSiteContent(nextContent);
+
+  ["/", "/services", "/gallery", "/about", "/reviews", "/contact", "/admin/content"].forEach(
+    (path) => revalidatePath(path),
+  );
+
+  redirect("/admin/content?status=saved");
 }
 
 export async function uploadMediaAction(formData: FormData) {
