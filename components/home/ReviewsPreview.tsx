@@ -1,8 +1,8 @@
 import Container from "../shared/Container";
 import SectionHeading from "../shared/SectionHeading";
-import { siteContent } from "../../data/site-content";
+import type { SiteContent } from "../../data/site-content";
 
-export default function ReviewsPreview() {
+export default function ReviewsPreview({ content }: { content: SiteContent }) {
   return (
     <section className="bg-zinc-50 py-16 sm:py-20">
       <Container>
@@ -13,7 +13,7 @@ export default function ReviewsPreview() {
         />
 
         <div className="grid gap-6 md:grid-cols-2">
-          {siteContent.reviews.map((review) => (
+          {content.reviews.map((review) => (
             <div
               key={review.name}
               className="rounded-[2rem] border border-zinc-200 bg-white p-7 shadow-sm"

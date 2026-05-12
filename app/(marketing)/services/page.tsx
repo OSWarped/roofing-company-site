@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Container from "@/components/shared/Container";
 import SectionHeading from "@/components/shared/SectionHeading";
 import { siteContent } from "@/data/site-content";
+import { getEditableSiteContent } from "@/lib/site/content";
 
 export const metadata: Metadata = {
   title: `Services | ${siteContent.companyName}`,
@@ -28,7 +29,9 @@ const processSteps = [
   },
 ];
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const content = await getEditableSiteContent();
+
   return (
     <>
       <section className="border-b border-zinc-200 bg-zinc-50 py-16 sm:py-20">
@@ -36,7 +39,7 @@ export default function ServicesPage() {
           <SectionHeading
             eyebrow="Services"
             title="Roofing services built for Mississippi Gulf Coast properties"
-            description={`From repairs to replacements, ${siteContent.companyName} is positioned to serve residential and commercial roofing needs across the coast. Licensed & insured • ${siteContent.licenseNumber}.`}
+            description={`From repairs to replacements, ${content.companyName} is positioned to serve residential and commercial roofing needs across the coast. Licensed & insured • ${content.licenseNumber}.`}
           />
         </Container>
       </section>
@@ -44,7 +47,7 @@ export default function ServicesPage() {
       <section className="bg-white py-16 sm:py-20">
         <Container>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {siteContent.services.map((service) => (
+            {content.services.map((service) => (
               <div
                 key={service.title}
                 className="rounded-3xl border border-zinc-200 bg-zinc-50 p-8 shadow-sm"
@@ -89,11 +92,11 @@ export default function ServicesPage() {
               <SectionHeading
                 eyebrow="Where We Serve"
                 title="Proudly serving communities across the Gulf Coast"
-                description={siteContent.serviceAreaDetail}
+                description={content.serviceAreaDetail}
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              {siteContent.serviceCities.map((city) => (
+              {content.serviceCities.map((city) => (
                 <div
                   key={city}
                   className="rounded-2xl border border-zinc-200 bg-zinc-50 px-5 py-4 text-sm font-medium text-zinc-700"
@@ -130,10 +133,10 @@ export default function ServicesPage() {
                 Request an Estimate
               </Link>
               <a
-                href={`tel:${siteContent.phone}`}
+                href={`tel:${content.phoneHref}`}
                 className="rounded-md border border-white/20 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
               >
-                Call {siteContent.phone}
+                Call {content.phone}
               </a>
             </div>
           </div>

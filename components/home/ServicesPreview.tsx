@@ -1,9 +1,9 @@
 import Link from "next/link";
 import SectionHeading from "../shared/SectionHeading";
 import Container from "../shared/Container";
-import { siteContent } from "../../data/site-content";
+import type { SiteContent } from "../../data/site-content";
 
-export default function ServicesPreview() {
+export default function ServicesPreview({ content }: { content: SiteContent }) {
   return (
     <section className="flex min-h-screen items-center bg-brand-light py-16 sm:py-20">
       <Container>
@@ -15,7 +15,7 @@ export default function ServicesPreview() {
           />
 
           <div className="grid gap-6 md:grid-cols-3">
-            {siteContent.services.map((service) => (
+            {content.services.map((service) => (
               <article
                 key={service.title}
                 className="flex min-h-[280px] flex-col justify-between rounded-[2rem] border border-brand-border bg-brand-surface p-8 transition hover:-translate-y-1 hover:shadow-[0_24px_60px_-28px_rgba(31,41,51,0.22)]"

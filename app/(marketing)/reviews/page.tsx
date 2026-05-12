@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Container from "@/components/shared/Container";
 import SectionHeading from "@/components/shared/SectionHeading";
 import { siteContent } from "@/data/site-content";
+import { getEditableSiteContent } from "@/lib/site/content";
 
 export const metadata: Metadata = {
   title: `Reviews | ${siteContent.companyName}`,
@@ -16,7 +17,10 @@ const reviewGoals = [
   "We had our roof done recently, and I’m very pleased with the results. We ended up paying nothing out of pocket since they handled all the insurance.",
 ];
 
-export default function ReviewsPage() {
+export default async function ReviewsPage() {
+  const content = await getEditableSiteContent();
+  const reviews = content.reviews.length ? content.reviews.map((review) => review.text) : reviewGoals;
+
   return (
     <>
       <section className="border-b border-zinc-200 bg-zinc-50 py-16 sm:py-20">
@@ -38,7 +42,7 @@ export default function ReviewsPage() {
                 Real customer feedback from Google
               </p>
               <ul className="mt-8 space-y-4">
-                {reviewGoals.map((goal) => (
+                {reviews.map((goal) => (
                   <li
                     key={goal}
                     className="rounded-2xl border border-zinc-200 bg-white px-5 py-4 text-sm text-zinc-700"
@@ -54,10 +58,10 @@ export default function ReviewsPage() {
                 Current State
               </p>
               <h2 className="mt-4 text-2xl font-semibold text-zinc-900">
-                {siteContent.reviewsPlaceholder.title}
+                {content.reviewsPlaceholder.title}
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-zinc-600 sm:text-base">
-                {siteContent.reviewsPlaceholder.text}
+                {content.reviewsPlaceholder.text}
               </p>
 
               <div className="mt-8 grid gap-5 md:grid-cols-2">
@@ -93,7 +97,7 @@ export default function ReviewsPage() {
               </h2>
               <p className="mt-4 text-base leading-7 text-zinc-300 sm:text-lg">
                 As real customer feedback is added, this page can become an
-                important part of showing the difference between {siteContent.companyName}
+                important part of showing the difference between {content.companyName}
                 and similarly named companies in the region.
               </p>
             </div>

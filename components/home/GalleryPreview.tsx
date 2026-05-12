@@ -1,9 +1,9 @@
 import Container from "@/components/shared/Container";
 import SectionHeading from "@/components/shared/SectionHeading";
-import { siteContent } from "@/data/site-content";
+import type { SiteContent } from "@/data/site-content";
 import { getGallerySectionItems } from "@/lib/admin/repository";
 
-export default async function GalleryPreview() {
+export default async function GalleryPreview({ content }: { content: SiteContent }) {
   const items = await getGallerySectionItems("home-featured");
 
   return (
@@ -11,9 +11,9 @@ export default async function GalleryPreview() {
       <Container>
         <div className="grid gap-12">
           <SectionHeading
-            eyebrow={siteContent.gallery.eyebrow}
-            title={siteContent.gallery.title}
-            description={siteContent.gallery.description}
+            eyebrow={content.gallery.eyebrow}
+            title={content.gallery.title}
+            description={content.gallery.description}
           />
 
           <div className="grid gap-5 md:grid-cols-3">
@@ -45,7 +45,7 @@ export default async function GalleryPreview() {
                   </div>
 
                   <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4 text-sm font-medium text-white/85 backdrop-blur-sm">
-                    {siteContent.companyName}
+                    {content.companyName}
                   </div>
                 </div>
               </div>

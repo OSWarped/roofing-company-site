@@ -240,5 +240,8 @@ export async function listAvailableMediaForSection(sectionKey: GallerySectionKey
   });
   const assignedIds = new Set(assigned.map((item) => item.mediaAssetId));
 
-  return media.filter((asset: ManagedMediaAsset) => !assignedIds.has(asset.id) && !asset.isArchived);
+  return media.filter(
+    (asset: ManagedMediaAsset) =>
+      asset.source === "database" && !assignedIds.has(asset.id) && !asset.isArchived,
+  );
 }

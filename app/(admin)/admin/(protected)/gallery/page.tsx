@@ -2,7 +2,7 @@ import { AdminNotice } from "@/components/admin/AdminNotice";
 import { GalleryPreviewCard } from "@/components/admin/GalleryPreviewCard";
 import { gallerySections } from "@/lib/admin/sections";
 import { getAdminSetupState } from "@/lib/auth/admin";
-import { listAvailableMediaForSection, listGalleryAssignments, GallerySectionItem, ManagedMediaAsset } from "@/lib/admin/repository";
+import { listAvailableMediaForSection, listGalleryAssignments, ManagedMediaAsset } from "@/lib/admin/repository";
 import {
   assignMediaToGalleryAction,
   removeGalleryItemAction,
@@ -11,10 +11,6 @@ import {
 
 type GalleryPageProps = {
   searchParams: Promise<{ status?: string }>;
-};
-
-type GalleryPreviewCardProps = {
-  item: GallerySectionItem;
 };
 
 export default async function AdminGalleryPage({ searchParams }: GalleryPageProps) {
@@ -66,35 +62,53 @@ export default async function AdminGalleryPage({ searchParams }: GalleryPageProp
 
             <div className="mt-6 rounded-3xl border border-white/10 bg-zinc-950/40 p-5">
               <h3 className="text-lg font-semibold text-white">Add media to this section</h3>
-              <form action={assignMediaToGalleryAction} className="mt-5 grid gap-4 xl:grid-cols-[1.2fr_1fr_1fr_140px_auto] xl:items-end">
+              <form action={assignMediaToGalleryAction} className="mt-5 grid gap-5">
                 <input type="hidden" name="sectionKey" value={section.key} />
-                <div>
-                  <label className="block text-sm font-medium text-white/75" htmlFor={`${section.key}-mediaAssetId`}>Media asset</label>
-                  <select id={`${section.key}-mediaAssetId`} name="mediaAssetId" className="mt-2 w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-red-300">
-                    <option value="">Select an uploaded image</option>
-                    {unassignedBySection[section.key].map((asset: ManagedMediaAsset) => (
-                      <option key={asset.id} value={asset.id}>{asset.pathname}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-white/75" htmlFor={`${section.key}-title`}>Display title</label>
-                  <input id={`${section.key}-title`} name="title" type="text" className="mt-2 w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-red-300" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-white/75" htmlFor={`${section.key}-subtitle`}>Supporting copy</label>
-                  <input id={`${section.key}-subtitle`} name="subtitle" type="text" className="mt-2 w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-red-300" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-white/75" htmlFor={`${section.key}-sortOrder`}>Sort order</label>
-                  <input id={`${section.key}-sortOrder`} name="sortOrder" type="number" min="0" defaultValue={section.items.length + 1} className="mt-2 w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-red-300" />
-                </div>
-                <div className="flex items-center gap-4 xl:pb-3">
-                  <label className="inline-flex items-center gap-2 text-sm text-white/75">
-                    <input name="isVisible" type="checkbox" defaultChecked className="h-4 w-4 rounded border-white/20 bg-zinc-950 text-red-400" />
-                    Visible
-                  </label>
-                  <button type="submit" className="rounded-2xl bg-red-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-400">Add</button>
+                {unassignedBySection[section.key].length ? (
+                  <fieldset>
+                    <legend className="text-sm font-medium text-white/75">Choose a photo</legend>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                      {unassignedBySection[section.key].map((asset: ManagedMediaAsset) => (
+                        <label key={asset.id} className="group cursor-pointer">
+                          <input name="mediaAssetId" type="radio" value={asset.id} className="peer sr-only" />
+                          <span className="block overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/70 transition peer-checked:border-red-300 peer-checked:ring-2 peer-checked:ring-red-300/35">
+                            <span className="block aspect-[4/3] bg-zinc-900">
+                              <img src={asset.blobUrl} alt={asset.altText} className="h-full w-full object-cover" />
+                            </span>
+                            <span className="block truncate px-3 py-2 text-xs font-medium text-white/70 group-hover:text-white">
+                              {asset.caption || asset.pathname}
+                            </span>
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                ) : (
+                  <AdminNotice
+                    title="No unassigned photos available"
+                    description="Upload photos in the media library, or remove an existing assignment before adding another photo to this section."
+                  />
+                )}
+                <div className="grid gap-4 xl:grid-cols-[1fr_1fr_140px_auto] xl:items-end">
+                  <div>
+                    <label className="block text-sm font-medium text-white/75" htmlFor={`${section.key}-title`}>Display title</label>
+                    <input id={`${section.key}-title`} name="title" type="text" className="mt-2 w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-red-300" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white/75" htmlFor={`${section.key}-subtitle`}>Supporting copy</label>
+                    <input id={`${section.key}-subtitle`} name="subtitle" type="text" className="mt-2 w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-red-300" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white/75" htmlFor={`${section.key}-sortOrder`}>Sort order</label>
+                    <input id={`${section.key}-sortOrder`} name="sortOrder" type="number" min="0" defaultValue={section.items.length + 1} className="mt-2 w-full rounded-2xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-red-300" />
+                  </div>
+                  <div className="flex items-center gap-4 xl:pb-3">
+                    <label className="inline-flex items-center gap-2 text-sm text-white/75">
+                      <input name="isVisible" type="checkbox" defaultChecked className="h-4 w-4 rounded border-white/20 bg-zinc-950 text-red-400" />
+                      Visible
+                    </label>
+                    <button type="submit" className="rounded-2xl bg-red-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-400">Add</button>
+                  </div>
                 </div>
               </form>
             </div>
